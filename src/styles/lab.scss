@@ -1,0 +1,36 @@
+@use 'variables' as v;
+@use 'mixins' as m;
+
+#experiment {
+  display: flex;
+  width: min(100%, 720px);
+  flex-direction: column;
+  gap: 12px;
+
+  #header {
+    a {
+      @include m.link;
+      &::before {
+        content: "> ";
+      }
+    }
+  }
+
+  #source {
+    a {
+      @include m.link;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+
+  #tags {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    span {
+      @include m.tag;
+      cursor: default;
+    }
+  }
+}

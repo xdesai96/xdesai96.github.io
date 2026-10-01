@@ -1,0 +1,20 @@
+---
+import '@/styles/exp.scss'
+---
+
+<canvas id="canvas"></canvas>
+
+<script>
+  import { loadImageGenerator } from '@/lib/imageGenerator';
+
+  const imageWasm = await loadImageGenerator();
+  const canvas = document.getElementById("canvas");
+  const context = canvas.getContext("2d");
+
+  const pixels = imageWasm.draw(canvas, 1000, 1000);
+  const imageData = context.createImageData(canvas.width, canvas.height);
+  imageData.data.set(pixels);
+
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.putImageData(imageData, 0, 0);
+</script>

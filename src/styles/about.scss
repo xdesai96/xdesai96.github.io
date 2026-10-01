@@ -1,0 +1,8 @@
+@use 'variables' as v;
+
+html, body {
+  margin: 0;
+  background: v.$bg;
+  color: v.$fg;
+  font-family: v.$text-font;
+}

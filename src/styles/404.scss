@@ -1,0 +1,12 @@
+@use 'mixins' as m;
+@use 'variables' as v;
+
+a {
+  @include m.link;
+  &::before {
+    content: "> ";
+  }
+  &:hover, &:focus-visible {
+    background: v.$link-bg;
+  }
+}

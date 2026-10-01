@@ -1,0 +1,25 @@
+@use 'variables' as v;
+
+@mixin tag {
+  font-size: 14px;
+  padding: 4px 8px;
+  color: v.$muted;
+  background: v.$link-bg;
+  border-radius: 4px;
+  transition:
+    color 120ms ease,
+    background 120ms ease;
+  &:hover, &:focus-visible {
+    color: v.$link-hover;
+    background: rgba(121, 230, 179, 0.12);
+  }
+}
+
+@mixin link {
+  font-size: 16px;
+  padding: 4px 8px;
+  text-decoration: none;
+  color: v.$link;
+  border-radius: 4px;
+}
+

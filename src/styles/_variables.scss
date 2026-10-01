@@ -1,0 +1,19 @@
+$bg: #101412;
+$fg: #d8e8df;
+$muted: #718078;
+
+$content-width: 800px;
+
+$link: #79e6b3;
+$link-hover: #a8f5ce;
+$link-bg: #19382c;
+
+$text-font: gohu;
+
+@font-face {
+  font-family: gohu;
+  src: url("/assets/fonts/gohu-subset.woff") format("woff");
+  font-display: block;
+  font-style: normal;
+  font-weight: 400;
+}

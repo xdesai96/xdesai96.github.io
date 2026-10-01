@@ -1,0 +1,9 @@
+@use 'variables' as v;
+
+#canvas {
+  max-width: v.$content-width;
+  @media (max-width: 840px) {
+    max-width: 100%;
+  }
+}
+

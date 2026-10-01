@@ -1,0 +1,24 @@
+---
+const { title, description, slug, tags, link } = Astro.props;
+---
+
+<div id="experiment">
+  <div id="header">
+    <a href={`/lab/${slug}`}>{title}</a>
+    <p>{description}</p>
+  </div>
+  <div id="source">
+    {link && (
+      <a href={link} target="_blank">Source</a>
+    )}
+  </div>
+  <div id="tags">
+    {tags && (
+      tags.map((tag) => (
+      <span>{tag}</span>
+      ))
+    )}
+  </div>
+</div>
+<hr />
+

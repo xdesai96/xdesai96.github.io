@@ -1,0 +1,22 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import Experiment from '@/components/ExperimentCard.astro';
+import '@/styles/lab.scss';
+
+import { getCollection } from 'astro:content'
+
+const experiments = await getCollection('lab')
+---
+
+<Layout>
+  <h1>Lab</h1>
+  <p>This page is a sandbox-hub where I publish experimental projects.</p>
+
+  <hr />
+
+  <div class="experiments">
+    {experiments.map((experiment) => (
+    <Experiment title={experiment.data.title} description={experiment.data.description} slug={experiment.data.slug} tags={experiment.data.tags} link={experiment.data.link}/>
+    ))}
+  </div>
+</Layout>

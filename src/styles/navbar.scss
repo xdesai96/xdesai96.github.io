@@ -1,0 +1,19 @@
+@use 'variables' as v;
+@use 'mixins' as m;
+
+#navbar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 10px;
+  a {
+    @include m.link;
+    white-space: nowrap;
+    &::before {
+      content: "> ";
+    }
+    &:hover, &:focus-visible {
+      background: v.$link-bg;
+    }
+  }
+}

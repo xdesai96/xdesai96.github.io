@@ -1,0 +1,26 @@
+@use 'variables' as v;
+@use 'mixins' as m;
+
+html, body {
+  margin: 0;
+  background: v.$bg;
+  color: v.$fg;
+  font-family: v.$text-font;
+}
+
+#app {
+  padding: 20px;
+}
+
+#content {
+  max-width: v.$content-width;
+  a {
+    @include m.link;
+    padding: 0;
+    margin: 0;
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+}
