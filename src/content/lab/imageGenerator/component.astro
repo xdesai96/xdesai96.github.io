@@ -8,7 +8,7 @@ import '@/styles/exp.scss'
 </div>
 
 <script>
-  import { loadImageGenerator, Size, Position, Color } from '@/lib/imageGenerator';
+import { loadImageGenerator, Size, Position, Color } from './lib.ts';
 
   const imageWasm = await loadImageGenerator();
   const canvas = document.getElementById("canvas");
