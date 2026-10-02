@@ -1,9 +1,17 @@
 @use 'variables' as v;
 
-#canvas {
-  max-width: v.$content-width;
-  @media (max-width: 840px) {
-    max-width: 100%;
+#image-generator {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  #canvas {
+    max-width: v.$content-width;
+    @media (max-width: 840px) {
+      max-width: 100%;
+    }
+  }
+  #download-btn { // TODO: Maybe global style for buttons?
+    padding: 10px 0;
+    max-width: 100px;
   }
 }
-

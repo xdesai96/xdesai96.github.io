@@ -2,19 +2,67 @@
 import '@/styles/exp.scss'
 ---
 
-<canvas id="canvas"></canvas>
+<div id="image-generator">
+  <button id="download-btn">Download</button>
+  <canvas id="canvas" width="800" height="500"></canvas>
+</div>
 
 <script>
-  import { loadImageGenerator } from '@/lib/imageGenerator';
+  import { loadImageGenerator, Size, Position, Color } from '@/lib/imageGenerator';
 
   const imageWasm = await loadImageGenerator();
   const canvas = document.getElementById("canvas");
   const context = canvas.getContext("2d");
 
-  const pixels = imageWasm.draw(canvas, 1000, 1000);
-  const imageData = context.createImageData(canvas.width, canvas.height);
-  imageData.data.set(pixels);
+  const downloadBtn = document.getElementById("download-btn");
+  downloadBtn.addEventListener('click', () => {
+    // https://stackoverflow.com/questions/8126623/downloading-canvas-element-to-an-image
+    const link = document.createElement('a');
+    link.download = 'generated-image.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
 
-  context.clearRect(0, 0, canvas.width, canvas.height);
-  context.putImageData(imageData, 0, 0);
+  type SceneObject = {
+    size: Size;
+    position: Position;
+    color: Color;
+  };
+
+  let objects: SceneObject[] = [];
+
+  const random = (min: number, max: number): number => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
+  const generateRandom = () => {
+    const objectCount = random(10, 50);
+
+    objects = Array.from(
+      { length: objectCount },
+      (): SceneObject => {
+        const width = random(20, 150);
+        const height = random(20, 150);
+        return {
+          size: { width, height },
+          position: { x: random(0, canvas.width - width), y: random(0, canvas.height - height) },
+          color: { r: random(0, 255), g: random(0, 255), b: random(0, 255), a: 255 }
+        };
+      }
+    );
+  };
+
+  const render = () => {
+    const pixels = imageWasm.init(canvas, { width: 1000, height: 500 }, { r: 255, g: 255, b: 255, a: 255 });
+    for (const object of objects) {
+      imageWasm.drawRect(object.position, object.size, object.color);
+    }
+    const imageData = context.createImageData(canvas.width, canvas.height);
+    imageData.data.set(pixels);
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.putImageData(imageData, 0, 0);
+  };
+
+  generateRandom();
+  render();
 </script>
