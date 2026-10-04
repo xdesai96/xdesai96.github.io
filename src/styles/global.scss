@@ -23,4 +23,12 @@ html, body {
       text-underline-offset: 4px;
     }
   }
+  button {
+    background: v.$link-bg;
+    border: 2px solid v.$link;
+    border-radius: 4px;
+    color: v.$link;
+    padding: 5px 10px;
+    max-width: 100px;
+  }
 }
