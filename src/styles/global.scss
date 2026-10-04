@@ -31,4 +31,13 @@ html, body {
     padding: 5px 10px;
     max-width: 100px;
   }
+
+  input[type=number] {
+    background: v.$link-bg;
+    border: 2px solid v.$link;
+    border-radius: 4px;
+    color: v.$link;
+    padding: 5px 10px;
+    max-width: 100px;
+  }
 }

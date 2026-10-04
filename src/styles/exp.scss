@@ -11,3 +11,15 @@
     }
   }
 }
+
+#sound-generator .inputs {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 10px;
+  align-items: center;
+  .play {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+}

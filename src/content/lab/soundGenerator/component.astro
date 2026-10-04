@@ -1,0 +1,68 @@
+---
+import '@/styles/exp.scss'
+---
+
+<div id="sound-generator">
+  <div class="inputs">
+    <button id="play-white-noise" class="play">White Noise</button>
+  </div>
+
+  <div class="inputs">
+    <input type="number" value="440" id="sine">
+    <button id="play-sine" class="play">Play</button>
+    <p>Sine</p>
+  </div>
+
+  <div class="inputs">
+    <input type="number" value="440" id="sawtooth">
+    <button id="play-sawtooth" class="play">Play</button>
+    <p>Sawtooth</p>
+  </div>
+
+  <div class="inputs">
+    <input type="number" value="440" id="square">
+    <button id="play-square" class="play">Play</button>
+    <p>Square</p>
+  </div>
+
+  <div class="inputs">
+    <input type="number" value="440" id="triangle">
+    <button id="play-triangle" class="play">Play</button>
+    <p>Triangle</p>
+  </div>
+</div>
+
+<script>
+import { SoundGenerator } from './lib.ts';
+  const soundWasm = await SoundGenerator.load();
+  const sampleRate = 44100;
+
+  const playSine = document.getElementById("play-sine");
+  const sineInput = document.getElementById("sine");
+  playSine.addEventListener('click', async () => {
+    await soundWasm.sine(sampleRate, [parseFloat(sineInput.value)]);
+  })
+
+  const playSawtooth = document.getElementById("play-sawtooth");
+  const sawtoothInput = document.getElementById("sawtooth");
+  playSawtooth.addEventListener('click', async () => {
+    await soundWasm.sawtooth(sampleRate, [parseFloat(sawtoothInput.value)]);
+  })
+
+  const playSquare = document.getElementById("play-square");
+  const squareInput = document.getElementById("square");
+  playSquare.addEventListener('click', async () => {
+    await soundWasm.square(sampleRate, [parseFloat(squareInput.value)]);
+  })
+
+  const playTriangle = document.getElementById("play-triangle");
+  const triangleInput = document.getElementById("triangle");
+  playTriangle.addEventListener('click', async () => {
+    await soundWasm.triangle(sampleRate, [parseFloat(triangleInput.value)]);
+  })
+
+  const playWhiteNoise = document.getElementById("play-white-noise");
+  playWhiteNoise.addEventListener('click', async () => {
+    await soundWasm.whiteNoise(sampleRate, [parseFloat(triangleInput.value)]);
+  })
+</script>
