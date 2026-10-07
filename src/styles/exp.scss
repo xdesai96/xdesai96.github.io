@@ -12,6 +12,15 @@
   }
 }
 
+#threed {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  #canvas {
+    max-width: 100%;
+  }
+}
+
 #sound-generator .inputs {
   display: flex;
   flex-direction: row;

@@ -1,0 +1,121 @@
+---
+import '@/styles/exp.scss'
+---
+
+<div id="threed">
+  <input type="number" name="segments" value="64">
+  <input type="number" name="rings" value="32">
+  <canvas id="canvas" width="800" height="500"></canvas>
+  <p id="fps"></p>
+  <button id="download-btn">Screenshot</button>
+</div>
+
+<script>
+import { loadWasm } from "./lib/wasm.ts"
+import { InputHandler } from "./lib/input.ts"
+import {
+  getCameraMatrix,
+  createContext,
+  createPipeline,
+  createBindGroup,
+  initObjects,
+  renderObjects,
+} from "./lib/renderer.ts"
+
+
+// init wasm and scene
+const w = await loadWasm();
+const objectsRaw = w.initScene();
+
+// canvas and context
+const canvas: HTMLCanvasElement = document.getElementById("canvas");
+const camera = w.getCamera();
+const cameraMatrix = getCameraMatrix(camera, canvas.width / canvas.height);
+const { device, context, format } = await createContext(canvas);
+
+const downloadBtn = document.getElementById("download-btn");
+downloadBtn.addEventListener('click', () => {
+  // https://stackoverflow.com/questions/8126623/downloading-canvas-element-to-an-image
+  const link = document.createElement('a');
+  link.download = 'generated-image.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+});
+
+
+// depth texture
+const depthTexture = device.createTexture({
+  size: [canvas.width, canvas.height],
+  format: "depth24plus",
+  usage: GPUTextureUsage.RENDER_ATTACHMENT,
+});
+const depthView = depthTexture.createView();
+
+// camera
+const cameraBuffer = device.createBuffer({
+  size: 64,
+  usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+});
+device.queue.writeBuffer(cameraBuffer, 0, cameraMatrix);
+
+
+// passing to gpu
+const objects = initObjects(device, objectsRaw);
+
+const pipeline = await createPipeline(device, format);
+const bindGroup = await createBindGroup(device, pipeline, cameraBuffer);
+
+const input = new InputHandler(canvas);
+let lastTime = 0;
+const fpsLimit = 24;
+const frameInterval = 1000/fpsLimit;
+const fpsP: HTMLParagraphElement = document.getElementById("fps");
+
+function shouldRender(timestamp: number) {
+  const elapsed = timestamp - lastTime;
+  if (elapsed < frameInterval) {
+    return false;
+  }
+  const currentFps = Math.round(1000 / elapsed);
+  fpsP.textContent = `FPS: ${currentFps}`;
+  lastTime = timestamp - (elapsed % frameInterval);
+  return true;
+}
+
+async function frame(timestamp: number) {
+  requestAnimationFrame(frame);
+  if (!shouldRender(timestamp)) return;
+  const cam = w.getCamera();
+  input.updateCamera(cam, (x: number, y: number, z: number, dx: number, dy: number, dz: number) => {
+    w.setCamera(x, y, z, dx, dy, dz);
+  });
+  const updatedCamera = w.getCamera();
+  const cameraMatrix = getCameraMatrix(updatedCamera, canvas.width / canvas.height);
+  device.queue.writeBuffer(cameraBuffer, 0, cameraMatrix);
+  const encoder = device.createCommandEncoder();
+  const pass = encoder.beginRenderPass({
+    colorAttachments: [
+      {
+        view: context.getCurrentTexture().createView(),
+        clearValue: {r: 0.5, g: 0.5, b: 0.5, a: 1.0},
+        loadOp: "clear",
+        storeOp: "store",
+      }
+    ],
+    depthStencilAttachment: {
+        view: depthView,
+        depthClearValue: 1.0,
+        depthLoadOp: "clear",
+        depthStoreOp: "store",
+      }
+  });
+  pass.setPipeline(pipeline);
+  pass.setBindGroup(0, bindGroup);
+  for (let object of objects) {
+    renderObjects(pass, object);
+  }
+  pass.end();
+  device.queue.submit([ encoder.finish() ]);
+}
+requestAnimationFrame(frame);
+</script>
